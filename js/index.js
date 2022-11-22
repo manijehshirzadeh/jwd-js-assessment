@@ -19,37 +19,48 @@
       5. Add a countdown timer - when the time is up, end the quiz, display the score and highlight the correct answers
 *************************** */
 
-window.addEventListener('DOMContentLoaded', () => {
-  const start = document.querySelector('#start');
-  start.addEventListener('click', function (e) {
-    document.querySelector('#quizBlock').style.display = 'block';
-    start.style.display = 'none';
+window.addEventListener("DOMContentLoaded", () => {
+  const start = document.querySelector("#start");
+  start.addEventListener("click", function (e) {
+    document.querySelector("#quizBlock").style.display = "block";
+    start.style.display = "none";
   });
+
   // quizArray QUESTIONS & ANSWERS
   // q = QUESTION, o = OPTIONS, a = CORRECT ANSWER
   // Basic ideas from https://code-boxx.com/simple-javascript-quiz/
   const quizArray = [
     {
-      q: 'Which is the third planet from the sun?',
-      o: ['Saturn', 'Earth', 'Pluto', 'Mars'],
+      q: "Which is the third planet from the sun?",
+      o: ["Saturn", "Earth", "Pluto", "Mars"],
       a: 1, // array index 1 - so Earth is the correct answer here
     },
     {
-      q: 'Which is the largest ocean on Earth?',
-      o: ['Atlantic Ocean', 'Indian Ocean', 'Arctic Ocean', 'Pacific Ocean'],
+      q: "Which is the largest ocean on Earth?",
+      o: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
       a: 3,
     },
     {
-      q: 'What is the capital of Australia',
-      o: ['Sydney', 'Canberra', 'Melbourne', 'Perth'],
+      q: "What is the capital of Australia",
+      o: ["Sydney", "Canberra", "Melbourne", "Perth"],
       a: 1,
+    },
+    {
+      q: "What is the largest city of Australia?",
+      o: ["Brisbane", "Canberra", "Melbourne", "Perth"],
+      a: 0,
+    },
+    {
+      q: "What is the largest continent in the world?",
+      o: ["Asia", "Africa", "Europe", "America"],
+      a: 0,
     },
   ];
 
   // function to Display the quiz questions and answers from the object
   const displayQuiz = () => {
-    const quizWrap = document.querySelector('#quizWrap');
-    let quizDisplay = '';
+    const quizWrap = document.querySelector("#quizWrap");
+    let quizDisplay = "";
     quizArray.map((quizItem, index) => {
       quizDisplay += `<ul class="list-group">
                    Q - ${quizItem.q}
@@ -62,29 +73,56 @@ window.addEventListener('DOMContentLoaded', () => {
       quizWrap.innerHTML = quizDisplay;
     });
   };
-
+  var minute = 3;
+  var sec = 60;
+  setInterval(displayTime, 1000);
+  function displayTime() {
+    document.querySelector("#time").innerHTML = minute + " : " + sec;
+    sec--;
+    if (sec == 00) {
+      minute--;
+      sec = 60;
+      if (minute == 0) {
+        minute = 3;
+      }
+    }
+  }
   // Calculate the score
   const calculateScore = () => {
+    console.log("submit was clicked");
     let score = 0;
     quizArray.map((quizItem, index) => {
       for (let i = 0; i < 4; i++) {
         //highlight the li if it is the correct answer
         let li = `li_${index}_${i}`;
         let r = `radio_${index}_${i}`;
-        liElement = document.querySelector('#' + li);
-        radioElement = document.querySelector('#' + r);
-
+        const liElement = document.querySelector("#" + li);
+        const radioElement = document.querySelector("#" + r);
+        console.log(liElement.classList);
         if (quizItem.a == i) {
           //change background color of li element here
+          liElement.classList += " active";
+          // console.log((liElement[i].style.backgroundColor = "red"));
         }
 
         if (radioElement.checked) {
           // code for task 1 goes here
+          if (quizItem.a == i) {
+            score++;
+          }
         }
       }
     });
+    document.querySelector("#score").innerHTML = score;
+    console.log({ score });
   };
-
+  const submit = document.querySelector("#btnSubmit");
+  submit.addEventListener("click", calculateScore);
   // call the displayQuiz function
   displayQuiz();
+  const resetForm = () => {
+    window.location.reload();
+  };
+  const reset = document.querySelector("#btnReset");
+  reset.addEventListener("click", resetForm);
 });
